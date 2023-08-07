@@ -34,7 +34,7 @@ int main()
         userData = GetSteamProfile();
         if (userData["response"]["game_count"].asInt() > 1) { //checks if there is at least one game in the user's library
             validID = true;
-            cout << "We found your profile!" << endl;
+            cout << "\nWe found your profile!\n" << endl;
         } else {
             cout << "We could not access game data from this profile.\nPlease ensure your Steam ID is correct and your profile and game details is set to public." << endl;
         }
@@ -89,7 +89,7 @@ int main()
             gameMap = CreateRBTreeValues(genres);
             std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
             operationTime = end - start;
-            cout << "Red Black Tree insert time: " << operationTime.count()/1000.0 << " seconds." << endl;
+            cout << "\nRed Black Tree insert time: " << operationTime.count()/1000.0 << " seconds.\n" << endl;
             GetTopTenOrderedMap(gameMap);
         }
         else if (stoi(selection) == 2) //Call B+ tree version.
@@ -97,7 +97,7 @@ int main()
             std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
             gameBPTree = CreateBPTreeValues(genres);
             std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
-            cout << "B+ Tree insert time: " << operationTime.count()/1000.0 << " seconds." << endl;
+            cout << "\nB+ Tree insert time: " << operationTime.count()/1000.0 << " seconds.\n" << endl;
             gameBPTree.getTop10(gameBPTree.getRoot());
         }
         else
@@ -195,17 +195,17 @@ bptree CreateBPTreeValues(map<string, int> genres)
 
     cout << "Calculating your games list..." << endl;
     //iterates through games database and assigns each one a rating based off genre compatibility and metacritic score
-    for (auto & i : gamesListValue) {
+    for (int i = 0; i < gamesListValue.size()/3; i++) {
         int rating = 0;
-        string name = i["name"].asString();
-        for (int j = 0; j < i["genres"].size(); j++) {
-            rating += genres[i["genres"][j]["name"].asString()];
+        string name = gamesListValue[i]["name"].asString();
+        for (int j = 0; j < gamesListValue[i]["genres"].size(); j++) {
+            rating += genres[gamesListValue[i]["genres"][j]["name"].asString()];
         }
-        if (i["metacritic"].asInt() == 0) {
+        if (gamesListValue[i]["metacritic"].asInt() == 0) {
             //if no metacritic exists, we give it the average metacritic rating.
             rating *= 62;
         } else {
-            rating *= i["metacritic"].asInt();
+            rating *= gamesListValue[i]["metacritic"].asInt();
         }
         gameBPTree.insert(gameData(rating, name));
     }
@@ -223,7 +223,7 @@ map<int, string> CreateRBTreeValues(map<string, int> genres)
     ifs >> gamesListValue;
     cout << "Calculating your games list..." << endl;
     //iterates through games database and assigns each one a rating based off genre compatibility and metacritic score
-    for (int i = 0; i < gamesListValue.size(); i++) {
+    for (int i = 0; i < gamesListValue.size()/3; i++) {
         int rating = 0;
         string name = gamesListValue[i]["name"].asString();
         for (int j = 0; j < gamesListValue[i]["genres"].size(); j++) {

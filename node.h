@@ -13,7 +13,7 @@
 class node
 {
 public:
-    bool leaf = true;
+    bool leaf;
     gameData* dataArray;
     int size;
     int degree;
