@@ -6,15 +6,16 @@
 #include <iostream>
 #include <istream>
 #include <fstream>
+#include <algorithm>
 #include <stdlib.h>
 #include <string.h>
-#include "dist/jsoncpp.cpp"
+#include <json/json.h>
 #include <curl/curl.h>
 #include "bptree.h"
 #include <chrono>
 
-
 using namespace std;
+
 Json::Value GetSteamProfile();
 map<string, int> GetGenres();
 void GetTopTenOrderedMap(map<int, string> gameMap);
