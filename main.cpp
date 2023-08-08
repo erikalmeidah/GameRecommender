@@ -23,6 +23,8 @@ map<int, string> CreateRBTreeValues(map<string, int> genres);
 bptree CreateBPTreeValues(map<string, int> genres);
 void displayTotalPlayTime(map<string,int> genre);
 
+//Steam ID: 76561198355838737
+
 int main()
 {
     //Recommends a game based on metacritic score and user's steam account preferences.
@@ -81,7 +83,7 @@ int main()
     std::map<int, string> gameMap;
     while (stoi(selection) != 1 && stoi(selection) != 2)
     {
-        cout << "Which tree would you like to use? Press 1 for Red & Black, 2 for B+" << endl;
+        cout << "Which tree would you like to use?\n1 - Red & Black tree (weighted genre preference)\n2 - B+ tree (unweighted genre preference)" << endl;
         cin >> selection;
         if (stoi(selection) == 1) //Call red/black tree version.
         {
@@ -195,16 +197,20 @@ bptree CreateBPTreeValues(map<string, int> genres)
 
     cout << "Calculating your games list..." << endl;
     //iterates through games database and assigns each one a rating based off genre compatibility and metacritic score
-    for (int i = 0; i < gamesListValue.size()/3; i++) {
+    for (int i = 0; i < gamesListValue.size()/3; i++)
+    {
         int rating = 0;
         string name = gamesListValue[i]["name"].asString();
-        for (int j = 0; j < gamesListValue[i]["genres"].size(); j++) {
+        for (int j = 0; j < gamesListValue[i]["genres"].size(); j++)
+        {
             rating += genres[gamesListValue[i]["genres"][j]["name"].asString()];
         }
         if (gamesListValue[i]["metacritic"].asInt() == 0) {
             //if no metacritic exists, we give it the average metacritic rating.
             rating *= 62;
-        } else {
+        }
+        else
+        {
             rating *= gamesListValue[i]["metacritic"].asInt();
         }
         gameBPTree.insert(gameData(rating, name));
@@ -223,16 +229,28 @@ map<int, string> CreateRBTreeValues(map<string, int> genres)
     ifs >> gamesListValue;
     cout << "Calculating your games list..." << endl;
     //iterates through games database and assigns each one a rating based off genre compatibility and metacritic score
+    int playedGenres = 0;
+    int rating;
+    string name;
     for (int i = 0; i < gamesListValue.size()/3; i++) {
-        int rating = 0;
-        string name = gamesListValue[i]["name"].asString();
-        for (int j = 0; j < gamesListValue[i]["genres"].size(); j++) {
-            rating += genres[gamesListValue[i]["genres"][j]["name"].asString()];
+        rating = 0;
+        name = gamesListValue[i]["name"].asString();
+        for (int j = 0; j < gamesListValue[i]["genres"].size(); j++)
+        {
+            if(genres[gamesListValue[i]["genres"][j]["name"].asString()] > 0)
+            {
+                rating += genres[gamesListValue[i]["genres"][j]["name"].asString()];
+                playedGenres++;
+            }
         }
-        if (gamesListValue[i]["metacritic"].asInt() == 0) {
+        rating = (int)(rating/playedGenres);
+        if (gamesListValue[i]["metacritic"].asInt() == 0)
+        {
             //if no metacritic exists, we give it the average metacritic rating.
             rating *= 62;
-        } else {
+        }
+        else
+        {
             rating *= gamesListValue[i]["metacritic"].asInt();
         }
         orderedMap[rating] = name;
